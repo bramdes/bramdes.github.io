@@ -59,10 +59,22 @@
 
       
       <div class="page-header">
-        <h1>Redirecting</h1>
-        <script  type="text/javascript">
-          window.location="metric_sql_converter.html";
-        </script>
+        <h1>Lily Metric to SQL converter</h1>
+        <p>Converts provided metric Name to it's sql form for use in Lily DNA driver</p>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="input">Metric names:</label>
+            <textarea class="form-control" rows="7" id="input" onkeyup="$('#output').text(convertTextToSql(this.value))"></textarea>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="output">SQL names:</label>
+            <textarea class="form-control" rows="7" id="output"></textarea>
+          </div>
+        </div>
       </div>
 
     </div> <!-- /container -->
