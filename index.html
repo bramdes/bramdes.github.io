@@ -48,7 +48,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="#">Name-SQL converter</a></li>
             
           </ul>
         </div><!--/.nav-collapse -->
@@ -59,19 +59,20 @@
 
       
       <div class="page-header">
-        <h1>Metric to SQL converter</h1>
+        <h1>Lily Metric to SQL converter</h1>
+        <p>Converts provided metric Name to it's sql form for use in Lily DNA driver</p>
       </div>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            <label for="comment">Comment:</label>
-            <textarea class="form-control" rows="5" id="comment"></textarea>
+            <label for="input">Metric names:</label>
+            <textarea class="form-control" rows="7" id="input" onkeyup="$('#output').text(convertTextToSql(this.value))"></textarea>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label for="comment">Comment:</label>
-            <textarea class="form-control" rows="5" id="comment"></textarea>
+            <label for="output">SQL names:</label>
+            <textarea class="form-control" rows="7" id="output"></textarea>
           </div>
         </div>
       </div>
@@ -88,5 +89,6 @@
     <script src="js/docs.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="ie10-viewport-bug-workaround.js"></script>
+    <script src="js/ngdatautil.js"></script>
   </body>
 </html>
