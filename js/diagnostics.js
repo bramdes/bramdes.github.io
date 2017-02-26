@@ -21,7 +21,14 @@ function readFile(file, callback){
                	},
                  }
                ];
-               Plotly.newPlot('histogramDiv', data);
+               var layout = {
+                 //autosize: false,
+                 //width: 500,
+                // height: 500
+                title:'Histogram access times (ms)',
+                margin: { t: 28 }
+               };
+               Plotly.newPlot('histogramDiv', data,layout);
              };
            })(file);
 
