@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Lily Diagnostics analyser</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/theme.css" rel="stylesheet">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+</head>
+
+<body role="document">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Lily tools</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="metric_sql_converter.html">Name-SQL converter</a></li>
+                <li class="active"><a href="#">DNA Diagnostics analyser</a></li>
+
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container theme-showcase" role="main">
+
+
+    <div class="page-header">
+        <h1>Lily Metric to SQL converter</h1>
+        <p>Upload the 'lily dna-diagnostics --dna-entity-type x' tool json output file</p>
+    </div>
+    <div class="row">
+        <div id="tester" class="col-md-6" style="height:250px;"></div>
+        <div id="histogramDiv" class="col-md-6" style="height:250px;"></div>
+        <script>
+	TESTER = document.getElementById('tester');
+	Plotly.plot( TESTER, [{
+	x: [1, 2, 3, 4, 5],
+	y: [1, 2, 4, 8, 16] }], {
+	margin: { t: 0 } } );
+
+        </script>
+
+        <input type="file" id="files" name="files[]" single />
+        <output id="fileList"></output>
+
+        <script>
+  function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // files is a FileList of File objects. List some properties.
+    var output = [];
+    for (var i = 0, f; f = files[i]; i++) {
+      output.push('<li><strong>', escape(f.name), '</strong>  - ',
+                  f.size, ' bytes, last modified: ',
+                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                  '</li>');
+      readFile(f,null);
+    }
+    document.getElementById('fileList').innerHTML = '<ul>' + output.join('') + '</ul>';
+  }
+
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+</script>
+    </div>
+    <div class="row">
+        <br/>
+        <div>
+            <textarea id="metricsTable" style="width:100%;"></textarea>
+        </div>
+        <br/>
+        <br/>
+        <div class="panel panel-info">
+            <div class="panel-heading">Backgroud: Metric to SQL logic</div>
+            <div class="panel-body">
+                <p>The logic for when an underscore is inserted:</p>
+                <ul>
+                    <li>When going from lowercase to uppercase</li>
+                    <li>When going from non-numeric to numeric and when going from numeric to non-numeric.<br/>
+                        This makes that "sumAmountOver5k" translates to "SUM_AMOUNT_OVER_5_K"
+                        or that "field1" translates to "FIELD_1"
+                    </li>
+                    <li>When there is already an underscore, no extra underscores are inserted</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')</script>
+<script src="js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="https://cdn.rawgit.com/Gmousse/dataframe-js/master/lib/browser/dataframe-min.js"></script>
+<script src="js/diagnostics.js"></script>
+</body>
+</html>
