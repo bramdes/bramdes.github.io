@@ -65,7 +65,7 @@ QUnit.test( "getHistogramData", function( assert ) {
 
 
 QUnit.test( "getDataframe", function( assert ) {
-    assert.deepEqual( [32, 30, 27, 32, 10, 9] , getRequestTimesArray(JSON.parse('' +
+    assert.deepEqual( [32, 30, 27, 32, 10, 9] , getDataFrameShow(JSON.parse('' +
    ' {' +
    '   "QUERY_BENCHMARK": {' +
    '     "referenceTime": "2017-02-23T03:48:52.341Z",' +

@@ -11,10 +11,10 @@ function readFile(file, callback){
                //document.getElementById('fileList').insertBefore(span, null);
 
                //
-
+                var fileContentJson=JSON.parse(e.target.result);
                var data = [
                  {
-                   x: getRequestTimesArray(JSON.parse(e.target.result)),
+                   x: getRequestTimesArray(fileContentJson),
                    type: 'histogram',
                	marker: {
                    //color: 'rgba(100,250,100,0.7)',
@@ -29,6 +29,8 @@ function readFile(file, callback){
                 margin: { t: 28 }
                };
                Plotly.newPlot('histogramDiv', data,layout);
+
+               document.getElementById('metricsTable').innerHTML= getDataFrameShow(fileContentJson);
              };
            })(file);
 
@@ -49,4 +51,24 @@ function getRequestTimesArray(json){
          }
     }
     return x
+}
+
+
+function getDataFrameShow(json) {
+        var x = [];
+        for(var i in json.QUERY_BENCHMARK.benchmarkRunResults)
+        {
+             var metric = json.QUERY_BENCHMARK.benchmarkRunResults[i];
+             for(var j in metric) {
+                var benchmarkRunResult = metric[j]
+                var row = [i, benchmarkRunResult.milliseconds];
+                x.push(row);
+             }
+        }
+
+
+    var DataFrame = dfjs.DataFrame;
+
+    return (new DataFrame(x, ['metric', 'milliseconds'])).show(10, true);
+
 }
