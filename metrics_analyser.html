@@ -62,19 +62,11 @@
         <p>Upload the 'lily dna-diagnostics --dna-entity-type x' tool json output file</p>
     </div>
     <div class="row">
-        <div id="tester" class="col-md-6" style="height:250px;"></div>
-        <div id="histogramDiv" class="col-md-6" style="height:250px;"></div>
-        <script>
-	TESTER = document.getElementById('tester');
-	Plotly.plot( TESTER, [{
-	x: [1, 2, 3, 4, 5],
-	y: [1, 2, 4, 8, 16] }], {
-	margin: { t: 0 } } );
+        <div id="histogramDiv" class="col-md-12" style="height:250px;">
+                Select a file please
+        </div>
 
-
-        </script>
-
-        <input type="file" id="files" name="files[]" single/>
+        <b><input type="file" id="files" name="files[]" single/></b>
         <output id="fileList"></output>
 
         <script>
@@ -110,7 +102,9 @@
         <br/>
         <div class="panel">
             <div class="panel-heading">Metrics With Unknown Values</div>
-            <textarea id="unknownCases" style="width:100%;"></textarea>
+            <div class="panel-body"  id="unknownCases">
+                Select a file please
+            </div>
         <br/>
         <div class="panel panel-info">
             <div class="panel-heading">TODO</div>
@@ -129,8 +123,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')</script>
 <script src="js/bootstrap.min.js"></script>
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug
+
 <script src="https://cdn.rawgit.com/Gmousse/dataframe-js/master/lib/browser/dataframe-min.js"></script>
+-->
 <script src="js/diagnostics.js"></script>
 <script src="js/underscore-min.js"></script>
 </body>

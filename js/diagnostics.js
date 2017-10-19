@@ -27,8 +27,8 @@ function readFile(file, callback){
                 // height: 500
                 title:'Histogram access times (ms)',
                 margin: { t: 28 },
-                mode: 'lines+markers',
                 yaxis: {
+                    mode: 'lines+markers',
                     //type: 'log',
                     autorange: true
                 }
@@ -44,6 +44,9 @@ function readFile(file, callback){
                           return currentMetricsStat.errorCount>0 ? 'errors': 'ok';
                         })['errors']>1;
                });
+               problemCases=_.mapObject(problemCases, function(val, key) {
+                                   return _.reduce(val, function(memo,stats){ return memo + stats.errorCount; } ,0);;
+                              });
                document.getElementById('problemCases').innerHTML= JSON.stringify(problemCases, null, 2);;
                //unknown cases
                var unknownCases= _.pick(fileContentJson.QUERY_BENCHMARK.benchmarkRunResults, function(value, key, object) {
@@ -51,6 +54,9 @@ function readFile(file, callback){
                  return _.countBy(currentMetric, function(currentMetricsStat) {
                           return currentMetricsStat.unknownCount>0 ? 'unknown': 'ok';
                         })['unknown']>1;
+               });
+               unknownCases=_.mapObject(unknownCases, function(val, key) {
+                    return _.reduce(val, function(memo,stats){ return memo + stats.unknownCount; } ,0);;
                });
                document.getElementById('unknownCases').innerHTML= JSON.stringify(unknownCases, null, 2);;
 
