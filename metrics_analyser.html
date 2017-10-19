@@ -58,7 +58,7 @@
 
 
     <div class="page-header">
-        <h1>Lily Metric to SQL converter</h1>
+        <h1>DNA Diagnostics analyser</h1>
         <p>Upload the 'lily dna-diagnostics --dna-entity-type x' tool json output file</p>
     </div>
     <div class="row">
@@ -71,9 +71,10 @@
 	y: [1, 2, 4, 8, 16] }], {
 	margin: { t: 0 } } );
 
+
         </script>
 
-        <input type="file" id="files" name="files[]" single />
+        <input type="file" id="files" name="files[]" single/>
         <output id="fileList"></output>
 
         <script>
@@ -93,7 +94,8 @@
   }
 
   document.getElementById('files').addEventListener('change', handleFileSelect, false);
-</script>
+
+        </script>
     </div>
     <div class="row">
         <br/>
@@ -101,19 +103,19 @@
             <textarea id="metricsTable" style="width:100%;"></textarea>
         </div>
         <br/>
+        <div>
+            <div class="panel-heading">Metrics with Error Values</div>
+            <textarea id="problemCases" style="width:100%;"></textarea>
+        <br/>
+        <br/>
+        <div class="panel">
+            <div class="panel-heading">Metrics With Unknown Values</div>
+            <textarea id="unknownCases" style="width:100%;"></textarea>
         <br/>
         <div class="panel panel-info">
-            <div class="panel-heading">Backgroud: Metric to SQL logic</div>
+            <div class="panel-heading">TODO</div>
             <div class="panel-body">
-                <p>The logic for when an underscore is inserted:</p>
-                <ul>
-                    <li>When going from lowercase to uppercase</li>
-                    <li>When going from non-numeric to numeric and when going from numeric to non-numeric.<br/>
-                        This makes that "sumAmountOver5k" translates to "SUM_AMOUNT_OVER_5_K"
-                        or that "field1" translates to "FIELD_1"
-                    </li>
-                    <li>When there is already an underscore, no extra underscores are inserted</li>
-                </ul>
+                <p>TODO</p>
             </div>
         </div>
     </div>
@@ -130,5 +132,6 @@
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="https://cdn.rawgit.com/Gmousse/dataframe-js/master/lib/browser/dataframe-min.js"></script>
 <script src="js/diagnostics.js"></script>
+<script src="js/underscore-min.js"></script>
 </body>
 </html>

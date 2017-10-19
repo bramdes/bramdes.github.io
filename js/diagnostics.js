@@ -26,11 +26,35 @@ function readFile(file, callback){
                  //width: 500,
                 // height: 500
                 title:'Histogram access times (ms)',
-                margin: { t: 28 }
+                margin: { t: 28 },
+                mode: 'lines+markers',
+                yaxis: {
+                    //type: 'log',
+                    autorange: true
+                }
                };
                Plotly.newPlot('histogramDiv', data,layout);
+               //metrics dataframe
+               //TODO
+               //document.getElementById('metricsTable').innerHTML= getDataFrameShow(fileContentJson);
+               //error cases
+               var problemCases= _.pick(fileContentJson.QUERY_BENCHMARK.benchmarkRunResults, function(value, key, object) {
+                 var currentMetric=object[key];
+                 return _.countBy(currentMetric, function(currentMetricsStat) {
+                          return currentMetricsStat.errorCount>0 ? 'errors': 'ok';
+                        })['errors']>1;
+               });
+               document.getElementById('problemCases').innerHTML= JSON.stringify(problemCases, null, 2);;
+               //unknown cases
+               var unknownCases= _.pick(fileContentJson.QUERY_BENCHMARK.benchmarkRunResults, function(value, key, object) {
+                 var currentMetric=object[key];
+                 return _.countBy(currentMetric, function(currentMetricsStat) {
+                          return currentMetricsStat.unknownCount>0 ? 'unknown': 'ok';
+                        })['unknown']>1;
+               });
+               document.getElementById('unknownCases').innerHTML= JSON.stringify(unknownCases, null, 2);;
 
-               document.getElementById('metricsTable').innerHTML= getDataFrameShow(fileContentJson);
+
              };
            })(file);
 
