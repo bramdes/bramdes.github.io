@@ -60,6 +60,8 @@ function readFile(file, callback){
                });
                document.getElementById('unknownCases').innerHTML= JSON.stringify(unknownCases, null, 2);;
 
+               document.getElementById('referenceTime').innerHTML= fileContentJson.QUERY_BENCHMARK.referenceTime;
+               document.getElementById('numRecordsQueried').innerHTML= fileContentJson.QUERY_BENCHMARK.numRecordsQueried;
 
              };
            })(file);

@@ -1,0 +1,25 @@
+{
+  "name": "bramdes.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bramdes/bramdes.github.io.git"
+  },
+  "author": "Bram Desoete",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bramdes/bramdes.github.io/issues"
+  },
+  "homepage": "https://github.com/bramdes/bramdes.github.io#readme",
+  "dependencies": {
+    "pandas-js": "^0.2.4"
+  }
+}
