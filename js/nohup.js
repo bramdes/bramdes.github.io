@@ -2,7 +2,7 @@
 
 function convertTextNoHup (text){
     var str = text.trim().split("\n");
-    var result="nohup "
+    var result="nohup bash -c 'set -x; "
     for (var i = 0, len = str.length; i < len; i++) {
           var line=(str[i]);
           if(line.trim().length>0){
@@ -11,5 +11,5 @@ function convertTextNoHup (text){
           }
     }
 
-    return result+ " > /hadoop/tmp &"
+    return result+ "' > /tmp/nohup_$(date +\"%Y_%m_%d_%H_%M_%S\").log 2>&1 &" + "\n\n#tail the file\n" + "less -f $(ls -1t /tmp/nohup* | sed q)"
 }

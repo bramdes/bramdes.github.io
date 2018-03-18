@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Lily Metric To sql converter</title>
+    <title>NOHUP it</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -62,7 +62,7 @@
         <div class="col-md-6">
           <div class="form-group">
             <label for="input">Input commands:</label>
-            <textarea class="form-control" rows="7" id="input" onkeyup="$('#output').text(convertTextNoHup(this.value))" placeholder="Paste metric name here"></textarea>
+            <textarea class="form-control" rows="7" id="input" onkeyup="$('#output').text(convertTextNoHup(this.value))" placeholder="Paste command(s) here"></textarea>
           </div>
         </div>
         <div class="col-md-6">
@@ -79,8 +79,14 @@
         <div class="panel panel-info">
           <div class="panel-heading">Backgroud: nohup</div>
           <div class="panel-body">
-            <p>all commands get nohuped in sequence</p>
-
+            <p>All commands get nohuped in sequence. Only 1 command per line (newlines in between).</p>
+            <p>FYI:</p>
+            <ul>
+              <li><b>'bash -c'</b> is to allow multiline</li>
+              <li><b>'set -x'</b> print the command also in output file</li>
+              <li><b>'s$(date +"%Y_%m_%d_%H_%M_%S")'</b> to append current datetime to the filename. example output file nohup_2018_03_18_18_45_59.log</li>
+              <li><b>'less -f $(ls -1t /tmp/nohup* | sed q)'</b> to tail the latest output log file nohup_.....log</li>
+            </ul>
           </div>
         </div>
       </div>
