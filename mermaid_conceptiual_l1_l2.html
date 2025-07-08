@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mermaid ER Diagram Splitter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .mermaid-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            background-color: #f9fafb;
+            min-height: 200px;
+            overflow: auto;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .raw-code-wrapper:hover .copy-btn {
+            opacity: 1;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10B981;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 7px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            visibility: hidden;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            visibility: visible;
+        }
+        /* Tab Styles */
+        .tab {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid transparent;
+            color: #6b7280;
+        }
+        .tab.active {
+            color: #4f46e5;
+            border-color: #4f46e5;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">🛠 Mermaid ER Diagram Splitter</h1>
+            <p class="mt-2 text-md text-gray-600">Visualize ER diagrams at different levels of detail.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left Panel: Input -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Mermaid Source Input</h2>
+                <textarea id="mermaid-input" class="w-full h-[42rem] p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm" placeholder="Paste your erDiagram code here..."></textarea>
+            </div>
+
+            <!-- Right Panel: Outputs -->
+            <div class="space-y-8">
+                <!-- Level 1 Output -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-2">Level 1: Core Attributes View</h2>
+                    <p class="text-sm text-gray-500 mb-4">Shows only attributes marked with `(c)`, `(pk)`, or `(fk)`.</p>
+                    <!-- Tabs for Level 1 -->
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-4" id="level1-tabs">
+                            <button class="tab active" data-target="level1-raw">Raw Mermaid</button>
+                            <button class="tab" data-target="level1-rendered">Rendered View</button>
+                        </nav>
+                    </div>
+                    <!-- Tab Panels for Level 1 -->
+                    <div class="mt-4">
+                        <div id="level1-raw" class="tab-panel relative raw-code-wrapper">
+                             <textarea id="level1-code" readonly class="w-full h-64 p-4 border border-gray-200 bg-gray-50 rounded-md font-mono text-sm"></textarea>
+                             <button class="copy-btn" onclick="copyToClipboard('level1')">Copy Code</button>
+                        </div>
+                        <div id="level1-rendered" class="tab-panel hidden">
+                            <div id="level1-output" class="mermaid-container"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level 2 Output -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-2">Level 2: Detailed View</h2>
+                    <p class="text-sm text-gray-500 mb-4">Shows all attributes, but removes the `(c)` marker.</p>
+                     <!-- Tabs for Level 2 -->
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-4" id="level2-tabs">
+                            <button class="tab active" data-target="level2-raw">Raw Mermaid</button>
+                            <button class="tab" data-target="level2-rendered">Rendered View</button>
+                        </nav>
+                    </div>
+                     <!-- Tab Panels for Level 2 -->
+                    <div class="mt-4">
+                        <div id="level2-raw" class="tab-panel relative raw-code-wrapper">
+                             <textarea id="level2-code" readonly class="w-full h-64 p-4 border border-gray-200 bg-gray-50 rounded-md font-mono text-sm"></textarea>
+                             <button class="copy-btn" onclick="copyToClipboard('level2')">Copy Code</button>
+                        </div>
+                        <div id="level2-rendered" class="tab-panel hidden">
+                            <div id="level2-output" class="mermaid-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-notification" class="toast">Copied to clipboard!</div>
+
+    <script>
+        // Initialize Mermaid.js
+        mermaid.initialize({ startOnLoad: false, theme: 'base', securityLevel: 'loose' });
+
+        const inputElement = document.getElementById('mermaid-input');
+        
+        // Level 1 Elements
+        const level1OutputElement = document.getElementById('level1-output');
+        const level1CodeElement = document.getElementById('level1-code');
+        
+        // Level 2 Elements
+        const level2OutputElement = document.getElementById('level2-output');
+        const level2CodeElement = document.getElementById('level2-code');
+
+        const exampleInput = `erDiagram
+  PERSON {
+    string id (pk)(c)
+    string name (c)
+    string email (pii)(c)
+    string phone
+    string address
+  }
+
+  ORDER {
+    string orderId (pk)(c)
+    datetime orderDate (c)
+    string customerId (fk)
+    decimal amount
+  }
+
+  PRODUCT {
+    string sku (pk)(c)
+    string name (c)
+    string description
+    decimal price (c)
+  }
+
+  LINE_ITEM {
+    string lineItemId (pk)(c)
+    string orderId (fk)
+    string productId (fk)
+    int quantity
+  }
+
+  PERSON ||--o{ ORDER : places
+  ORDER }o--|| LINE_ITEM : contains
+  PRODUCT }o--|| LINE_ITEM : "is for"`;
+
+        inputElement.value = exampleInput;
+
+        // Function to process and render the diagrams
+        const processAndRender = async () => {
+            const rawCode = inputElement.value;
+            if (!rawCode.trim().startsWith('erDiagram')) {
+                level1OutputElement.innerHTML = '<p class="text-red-500">Please provide a valid erDiagram.</p>';
+                level2OutputElement.innerHTML = '<p class="text-red-500">Please provide a valid erDiagram.</p>';
+                return;
+            }
+
+            const lines = rawCode.split('\n');
+            
+            let level1Lines = [];
+            let level2Lines = [];
+            let inEntity = false;
+
+            const attributeRegex = /^\s*([\w\s<>\[\]]+?)\s*((?:\([\w-]+\)\s*)*)$/;
+
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+
+                if (!inEntity || trimmedLine.endsWith('{') || trimmedLine === '}') {
+                    if (trimmedLine.endsWith('{')) inEntity = true;
+                    if (trimmedLine === '}') inEntity = false;
+                    
+                    level1Lines.push(line);
+                    level2Lines.push(line);
+                    continue;
+                }
+
+                const match = trimmedLine.match(attributeRegex);
+
+                if (match) {
+                    const baseAttribute = match[1].trim(); 
+                    const allMarkersStr = match[2] || ""; 
+                    const allMarkers = allMarkersStr.match(/\([\w-]+\)/g) || [];
+
+                    const isCore = allMarkers.includes('(c)');
+                    const isPk = allMarkers.includes('(pk)');
+                    const isFk = allMarkers.includes('(fk)');
+
+                    // Level 2 Logic: All attributes, strip (c)
+                    const level2Markers = allMarkers.filter(m => m !== '(c)');
+                    const level2Comment = level2Markers.map(m => m.slice(1, -1)).join(' ');
+                    let level2Line = `    ${baseAttribute}`;
+                    if (level2Comment) {
+                        level2Line += ` "${level2Comment}"`;
+                    }
+                    level2Lines.push(level2Line);
+
+                    // Level 1 Logic: Only core, pk, or fk attributes
+                    if (isCore || isPk || isFk) {
+                        const level1Markers = allMarkers.filter(m => m !== '(c)');
+                        const level1Comment = level1Markers.map(m => m.slice(1, -1)).join(' ');
+                        let level1Line = `    ${baseAttribute}`;
+                        if (level1Comment) {
+                            level1Line += ` "${level1Comment}"`;
+                        }
+                        level1Lines.push(level1Line);
+                    }
+                } else if (trimmedLine) {
+                    level1Lines.push(line);
+                    level2Lines.push(line);
+                }
+            }
+            
+            const level1Code = level1Lines.join('\n');
+            const level2Code = level2Lines.join('\n');
+
+            level1CodeElement.value = level1Code;
+            level2CodeElement.value = level2Code;
+
+            renderMermaid('level1-output', level1Code);
+            renderMermaid('level2-output', level2Code);
+        };
+
+        const renderMermaid = async (elementId, code) => {
+            const element = document.getElementById(elementId);
+            try {
+                const svgId = elementId + '-svg-' + Date.now();
+                const { svg } = await mermaid.render(svgId, code);
+                element.innerHTML = svg;
+            } catch (e) {
+                element.innerHTML = `<p class="text-red-500">Error rendering diagram:</p><pre class="text-xs p-2 bg-red-50 rounded">${e.message}</pre>`;
+                console.error(e);
+            }
+        };
+
+        // Function to copy code to clipboard
+        const copyToClipboard = (level) => {
+            const codeEl = document.getElementById(`${level}-code`);
+            codeEl.select(); // Select the text in the textarea
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        };
+        
+        const showToast = () => {
+            const toast = document.getElementById('toast-notification');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Function to handle tab switching
+        const setupTabs = () => {
+            document.querySelectorAll('[id$="-tabs"]').forEach(tabContainer => {
+                const tabs = tabContainer.querySelectorAll('.tab');
+                const panelContainer = tabContainer.parentElement.nextElementSibling;
+                const panels = panelContainer.querySelectorAll('.tab-panel');
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+
+                        panels.forEach(p => p.classList.add('hidden'));
+                        const targetPanelId = tab.getAttribute('data-target');
+                        document.getElementById(targetPanelId).classList.remove('hidden');
+                    });
+                });
+            });
+        };
+
+        // Add event listener for live updates
+        inputElement.addEventListener('input', processAndRender);
+
+        // Initial setup on page load
+        window.onload = () => {
+            processAndRender();
+            setupTabs();
+        };
+    </script>
+</body>
+</html>
